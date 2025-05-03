@@ -23,6 +23,7 @@ RUN apt-get update && apt-get install -y \
 # Install Composer (global installation)
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+# Enable required Apache modules
 RUN a2enmod rewrite
 
 # Copy the Apache configuration file
@@ -31,11 +32,17 @@ COPY apache.conf /etc/apache2/sites-available/000-default.conf
 # Set working directory
 WORKDIR /var/www/html
 
-# Copy the Laravel project files into the container
+# Copy composer files first
+COPY composer.json composer.lock ./
+
+# Install dependencies
+RUN composer install --no-scripts --no-autoloader
+
+# Copy the rest of the application
 COPY . .
 
-# Install Laravel dependencies
-RUN composer install --no-interaction --ignore-platform-reqs --no-scripts --no-plugins --no-autoloader
+# Generate autoload files
+RUN composer dump-autoload --optimize
 
 # Set proper permissions
 RUN chown -R www-data:www-data /var/www/html && \
