@@ -33,7 +33,7 @@ COPY apache.conf /etc/apache2/sites-available/000-default.conf
 WORKDIR /var/www/html
 
 # Copy composer files first
-COPY composer.json composer.lock ./
+COPY composer.json ./
 
 # Install dependencies
 RUN composer install --no-scripts --no-autoloader
