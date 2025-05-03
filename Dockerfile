@@ -23,6 +23,8 @@ RUN apt-get update && apt-get install -y \
 # Install Composer (global installation)
 RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 
+RUN a2enmod rewrite
+
 # Copy the Apache configuration file
 COPY apache.conf /etc/apache2/sites-available/000-default.conf
 
